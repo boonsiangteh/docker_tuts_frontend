@@ -10,5 +10,8 @@ RUN npm run build
 
 # no tag here cause it'll ignore previous phase so that we only take the things we need from previous builder phase
 FROM nginx
+# this command does nothing in local machine development environment
+# (however, elastic beanstalk will use this command to expose port 80 on our container for incoming traffic)
+EXPOSE 80
 COPY --from=builder /app/build /usr/share/nginx/html
 # copy to html folder in nginx as that is the default folder where they'll serve webpages
