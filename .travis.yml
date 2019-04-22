@@ -1,0 +1,9 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t boonsiangteh/frontend -f Dockerfile.dev .
+
+script:
+  - docker run boonsiangteh/frontend npm run test -- --coverage
