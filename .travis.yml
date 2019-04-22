@@ -2,8 +2,27 @@ sudo: required
 services:
   - docker
 
+# build docker image before installing our app (just for testing)
 before_install:
   - docker build -t boonsiangteh/frontend -f Dockerfile.dev .
 
+# run test on our app -- --coverage essentially bypass the need to press enter to trigger test in our react app
 script:
   - docker run boonsiangteh/frontend npm run test -- --coverage
+
+# perform configuration for deployment to AWS Elastic Beanstalk service
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-southeast-1"
+  app: "docker-react"
+  env: "DockerReact-env"
+  # this is the S3 bucket which will be generated for us when we start elastic beanstalk instance
+  bucket_name: "elasticbeanstalk-ap-southeast-1-527637964781"
+  # a bucket folder with the name of our app will be created for us in the list of S3 buckets when we deploy our app
+  bucket_path: "docker-react"
+  # only do deployment whenever we push to master branch
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
